@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,26 +21,14 @@ public class Memo {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_memo_user"))
-    private User user;
-
-    public Memo(String title, String content, User user) {
+    public Memo(String title, String content) {
         this.title = title;
         this.content = content;
-        this.user = user;
     }
 
-    public void update(String title, String content, LocalDateTime updatedAt) {
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
-        this.updatedAt = updatedAt;
     }
 
 }
