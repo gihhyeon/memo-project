@@ -12,38 +12,39 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/memos")
+@CrossOrigin(origins = "http://localhost:8080")
 public class MemoController {
 
     private final MemoService memoService;
 
     // 메모 생성
-    @PostMapping("/memos")
+    @PostMapping
     public ResponseEntity<Memo> createMemo(@RequestBody Memo memo) {
         Memo createdMemo = memoService.createMemo(memo);
         return ResponseEntity.ok(createdMemo);
     }
 
     // 모든 메모 조회
-    @GetMapping("/memos")
+    @GetMapping
     public ResponseEntity<List<Memo>> getAllMemos() {
         return ResponseEntity.ok(memoService.getAllMemos());
     }
 
     // 특정 메모 조회
-    @GetMapping("/memos/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Memo> getMemoById(@PathVariable Long id) {
         return ResponseEntity.ok(memoService.getMemoById(id));
     }
 
     // 메모 수정
-    @PutMapping("/memos/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Memo> updateMemo(@PathVariable Long id, @RequestBody Memo memo) {
         return ResponseEntity.ok(memoService.updateMemo(id, memo));
     }
 
     // 메모 삭제
-    @DeleteMapping("/memos/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMemo(@PathVariable Long id) {
         memoService.deleteMemo(id);
         return ResponseEntity.noContent().build();
