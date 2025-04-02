@@ -21,7 +21,7 @@ public class MemoController {
 
     // 메모 생성
     @PostMapping
-    public ResponseEntity<Memo> createMemo(@RequestBody MemoRequestDto memoRequestDto) {
+    public ResponseEntity<Memo> createMemo(@RequestBody @Validated MemoRequestDto memoRequestDto) {
         Memo createdMemo = memoService.createMemo(memoRequestDto);
         return ResponseEntity.ok(createdMemo);
     }
@@ -40,7 +40,7 @@ public class MemoController {
 
     // 메모 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Memo> updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) {
+    public ResponseEntity<Memo> updateMemo(@PathVariable Long id, @RequestBody @Validated MemoRequestDto memoRequestDto) {
         return ResponseEntity.ok(memoService.updateMemo(id, memoRequestDto));
     }
 
