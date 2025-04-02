@@ -1,5 +1,6 @@
 package com.goormthon.memo_study.service;
 
+import com.goormthon.memo_study.dto.MemoRequestDto;
 import com.goormthon.memo_study.entity.Memo;
 import com.goormthon.memo_study.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,8 @@ public class MemoService {
 
     // 메모 생성
     @Transactional
-    public Memo createMemo(Memo memo) {
+    public Memo createMemo(MemoRequestDto memoRequestDto) {
+        Memo memo = new Memo(memoRequestDto.getTitle(), memoRequestDto.getContent());
         return memoRepository.save(memo);
     }
 
@@ -36,9 +38,9 @@ public class MemoService {
 
     // 메모 수정
     @Transactional
-    public Memo updateMemo(Long id, Memo newMemo) {
+    public Memo updateMemo(Long id, MemoRequestDto memoRequestDto) {
         Memo memo = getMemoById(id);
-        memo.update(newMemo.getTitle(), newMemo.getContent());
+        memo.update(memoRequestDto.getTitle(), memoRequestDto.getContent());
         return memoRepository.save(memo);
     }
 
