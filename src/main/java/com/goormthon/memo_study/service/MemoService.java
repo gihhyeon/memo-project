@@ -2,6 +2,8 @@ package com.goormthon.memo_study.service;
 
 import com.goormthon.memo_study.dto.MemoRequestDto;
 import com.goormthon.memo_study.entity.Memo;
+import com.goormthon.memo_study.error.CustomException;
+import com.goormthon.memo_study.error.ErrorCode;
 import com.goormthon.memo_study.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,11 @@ public class MemoService {
     // 특정 메모 조회
     @Transactional(readOnly = true)
     public Memo getMemoById(Long id) {
-        return memoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("메모를 찾을 수 없습니다. ID: " + id));
+        if (!memoRepository.existsById(id)) {
+            throw new CustomException(ErrorCode.MEMO_NOT_FOUND);
+        }
+
+        return memoRepository.findById(id).get();
     }
 
     // 메모 수정
