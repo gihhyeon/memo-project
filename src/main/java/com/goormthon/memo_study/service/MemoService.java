@@ -3,13 +3,14 @@ package com.goormthon.memo_study.service;
 import com.goormthon.memo_study.dto.MemoRequestDto;
 import com.goormthon.memo_study.entity.Memo;
 import com.goormthon.memo_study.error.CustomException;
-import com.goormthon.memo_study.error.ErrorCode;
 import com.goormthon.memo_study.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.goormthon.memo_study.error.ErrorCode.*;
 
 
 @Service
@@ -35,7 +36,7 @@ public class MemoService {
     @Transactional(readOnly = true)
     public Memo getMemoById(Long id) {
         if (!memoRepository.existsById(id)) {
-            throw new CustomException(ErrorCode.MEMO_NOT_FOUND);
+            throw new CustomException(MEMO_NOT_FOUND);
         }
 
         return memoRepository.findById(id).get();
@@ -44,6 +45,10 @@ public class MemoService {
     // 메모 수정
     @Transactional
     public Memo updateMemo(Long id, MemoRequestDto memoRequestDto) {
+        if (!memoRepository.existsById(id)) {
+            throw new CustomException(MEMO_NOT_FOUND);
+        }
+
         Memo memo = getMemoById(id);
         memo.update(memoRequestDto.getTitle(), memoRequestDto.getContent());
         return memoRepository.save(memo);
@@ -52,6 +57,9 @@ public class MemoService {
     // 메모 삭제
     @Transactional
     public void deleteMemo(Long id) {
+        if (!memoRepository.existsById(id)) {
+            throw new CustomException(MEMO_NOT_FOUND);
+        }
         Memo memo = getMemoById(id);
         memoRepository.delete(memo);
     }
