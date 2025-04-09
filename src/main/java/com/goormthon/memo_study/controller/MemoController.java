@@ -20,29 +20,29 @@ public class MemoController {
     private final MemoService memoService;
 
     // 메모 생성
-    @PostMapping
-    @Operation(summary = "메모 등록", description = "메모를 등록할 때 사용하는 API")
+    @PostMapping(produces = "application/json")
+    @Operation(summary = "메모 등록", description = "새로운 메모를 등록할 때 사용하는 API")
     public ResponseEntity<Memo> createMemo(@RequestBody @Validated MemoRequestDto memoRequestDto) {
         Memo createdMemo = memoService.createMemo(memoRequestDto);
         return ResponseEntity.ok(createdMemo);
     }
 
     // 모든 메모 조회
-    @GetMapping
+    @GetMapping(produces = "application/json")
     @Operation(summary = "모든 메모 조회", description = "저장된 모든 메모를 조회하는 API")
     public ResponseEntity<List<Memo>> getAllMemos() {
         return ResponseEntity.ok(memoService.getAllMemos());
     }
 
     // 특정 메모 조회
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     @Operation(summary = "특정 메모 조회", description = "id로 특정 메모를 조회하는 API")
     public ResponseEntity<Memo> getMemoById(@PathVariable Long id) {
         return ResponseEntity.ok(memoService.getMemoById(id));
     }
 
     // 메모 수정
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", produces = "application/json")
     @Operation(summary = "메모 수정", description = "id로 특정 메모를 수정하는 API")
     public ResponseEntity<Memo> updateMemo(@PathVariable Long id, @RequestBody @Validated MemoRequestDto memoRequestDto) {
         return ResponseEntity.ok(memoService.updateMemo(id, memoRequestDto));
