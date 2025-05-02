@@ -5,6 +5,8 @@ import com.goormthon.memo_study.dto.MemoRequestDto;
 import com.goormthon.memo_study.entity.Memo;
 import com.goormthon.memo_study.service.MemoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,12 +32,20 @@ public class MemoController {
     // 모든 메모 조회
     @GetMapping(produces = "application/json")
     @Operation(summary = "모든 메모 조회", description = "저장된 모든 메모를 조회하는 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "조회 실패")
+    })
     public ResponseEntity<List<Memo>> getAllMemos() {
         return ResponseEntity.ok(memoService.getAllMemos());
     }
 
     // 특정 메모 조회
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "조회 실패")
+    })
     @Operation(summary = "특정 메모 조회", description = "id로 특정 메모를 조회하는 API")
     public ResponseEntity<Memo> getMemoById(@PathVariable Long id) {
         return ResponseEntity.ok(memoService.getMemoById(id));
