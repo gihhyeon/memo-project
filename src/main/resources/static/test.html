@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메모 API 테스트</title>
+</head>
+<body>
+<h1>Memo API Test</h1>
+
+<h3>메모 생성</h3>
+<input type="text" id="title" placeholder="제목">
+<input type="text" id="content" placeholder="내용">
+<button onclick="createMemo()">생성</button>
+
+<h3>모든 메모 조회</h3>
+<button onclick="getAllMemos()">조회</button>
+<pre id="allMemos"></pre>
+
+<h3>특정 메모 조회</h3>
+<input type="number" id="memoId" placeholder="메모 ID">
+<button onclick="getMemoById()">조회</button>
+<pre id="singleMemo"></pre>
+
+<script>
+    const API_BASE = "http://localhost:8080/memos";
+
+    function createMemo() {
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+
+        fetch(API_BASE, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, content })
+        })
+            .then(res => res.json())
+            .then(data => alert("메모 생성 완료: " + JSON.stringify(data)))
+            .catch(err => console.error(err));
+    }
+
+    function getAllMemos() {
+        fetch(API_BASE)
+            .then(res => res.json())
+            .then(data => document.getElementById("allMemos").textContent = JSON.stringify(data, null, 2))
+            .catch(err => console.error(err));
+    }
+
+    function getMemoById() {
+        const id = document.getElementById("memoId").value;
+        fetch(`${API_BASE}/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error("메모 조회 실패");
+                return res.json();
+            })
+            .then(data => document.getElementById("singleMemo").textContent = JSON.stringify(data, null, 2))
+            .catch(err => alert(err));
+    }
+</script>
+</body>
+</html>
