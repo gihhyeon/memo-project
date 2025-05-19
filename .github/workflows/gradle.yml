@@ -1,15 +1,18 @@
 
 name: Java CI with Gradle
 
+# 워크 플로우가 언제 실행될지
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
+# 작업
 jobs:
   build:
 
+    # 작업 환경
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,11 +25,44 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: application.yml 생성 후 secret 값 복붙
+      run: |
+        mkdir -p ./src/main/resources
+        touch ./src/main/resources/application.yml
+        echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
+        cat ./src/main/resources/application.yml
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'memoServer'
+        path: build/libs/memoServer-0.0.1-SNAPSHOT.jar
+
+  # 배포
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: memoServer
+          path: build/libs/
+
+      - name: Deploy to EC@
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/trelloServer-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/trelloServer.jar
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.EC2_USERNAME }}/trelloServer.jar > app.log 2>&1 &"
+          rm -f private_key.pem
 
 
 
