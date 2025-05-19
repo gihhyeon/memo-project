@@ -39,7 +39,7 @@ class MemoServiceTest {
 
         // then(검증): 어떠한 결과가 나와야 한다.
         assertThat(result).isNotNull();
-        assertThat(result.getTitle()).isEqualTo("테스트 제목2222");
+        assertThat(result.getTitle()).isEqualTo("테스트 제목");
         assertThat(result.getContent()).isEqualTo("테스트 내용");
 
     }
